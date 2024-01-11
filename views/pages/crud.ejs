@@ -1,0 +1,131 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title d-flex align-items-center flex-wrap">
+                        <h2 class="mr-40"><%= view.title %></h2>
+                        <a href="/<%= view.url %>/create" class="main-btn primary-btn btn-hover btn-sm">
+                             Add New
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="breadcrumb-wrapper">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#"><%= view.menu %></a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <%= view.submenu %>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12" style="font-size: small;">
+                    <div class="card-style mb-30">
+                        <div class="table-wrapper table-responsive">
+                            <table id="thetable" class="stripe nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <% for(d in vdata.columns_name) { %>
+                                            <% if(vdata.types[d]!='id') { %>
+                                            <th><%= vdata.columns_name[d] %></th>
+                                            <% } %>
+                                        <% } %>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+    let table = new DataTable('#thetable', {
+        ajax: {
+            url: '/<%= view.url; %>/data',
+            dataSrc: ''
+        },	
+        columnDefs: [
+            {
+                targets: 0,
+                render: function ( data, type, row, meta ) {
+                    return `
+                    <div class="text-start">
+                        <a class="btn btn-primary text-white mr-5" href="/<%= view.url %>/update/`+data+`">
+                            <i class="lni lni-pencil"></i>
+                        </a>
+                        <a class="btn btn-danger text-white mr-5" onclick="confirmDelete('/<%= view.url %>/delete/`+data+`')">
+                            <i class="lni lni-trash-can"></i>
+                        </a>
+                    </div>
+                    `;
+                },
+            }
+        ],
+        columns: [
+            { data: '<%= vdata.columns[0] %>' },
+            <% for(d in vdata.columns) { %>
+                <% if(vdata.types[d]!='id') { %>
+                    { data: '<%= vdata.columns[d] %>' },
+                <% } %>
+            <% } %>
+        ],
+        deferRender: true,
+        order: [[1, 'asc']],
+        "dom": 'frtpi',
+        "pageLength": 10
+    });
+</script>
+
+<script>
+    async function confirmDelete(link){
+        Swal.fire({
+            title: "System:",
+            text: "Yakin untuk menghapus data ini?",
+            icon: "info",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Hapus",
+            denyButtonText: `Batal`
+            }).then((result) => {
+            if (result.isConfirmed) {
+                location.href=`${link}`
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "System:",
+                    text: "Menghapus data dibatalkan",
+                    icon: "error",
+                });
+            }
+        });
+
+var formData = new FormData();
+        formData.append('orderNo', orderNo);
+        fetch(`/order/detail/${orderNo}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then((response) => response.json())
+        .then((result) => {
+            let rs = result;
+            detailShow(rs)
+        })
+        .catch((error) => {
+            alert("Terjadi error, hubungi MIS");
+        });
+    }
+</script>

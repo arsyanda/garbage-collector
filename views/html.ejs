@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('parts/header') %>
+	</head>
+	<body>
+		<%- include('parts/preloader') %>	
+		<% if(!view.isfullwidth) { %>
+			<%- include('parts/sidebar') %>
+		<% } %>
+		<!-- ======== main-wrapper start =========== -->
+		<main class="main-wrapper" <%- view.isfullwidth %>>
+			<% if(!view.isfullwidth) { %>
+				<%- include('parts/topbar') %>
+			<% } %>
+			<%- include(`pages/${view.page}`) %>
+			<%- include('parts/footer') %>
+		</main>
+		<!-- ======== main-wrapper end =========== -->
+		<%- include('parts/script') %>
+	</body>
+</html>

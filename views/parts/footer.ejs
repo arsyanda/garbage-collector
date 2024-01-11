@@ -1,0 +1,31 @@
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 order-last order-md-first">
+                <div class="copyright text-center text-md-start">
+                    <p class="text-sm">
+                        <a href="#" rel="nofollow" target="_blank">
+                            MallKarbon v0.1
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="terms d-flex justify-content-center justify-content-md-end">
+                    <a href="#" class="text-sm">Terms & Conditions</a>
+                    <a href="#" class="text-sm ml-15">Privacy & Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<% if(flash) { %>
+    <script>
+        Swal.fire({
+            title: "System:",
+            text: "<%= flash.message %>",
+            icon: "<%= flash.type %>"
+        });
+    </script>
+<% } %>

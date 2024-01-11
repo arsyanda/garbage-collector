@@ -1,0 +1,169 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title d-flex align-items-center flex-wrap">
+                        <h2 class="mr-40"><%= view.title %></h2>
+                        <a href="/<%= view.url %>" class="main-btn primary-btn btn-hover btn-sm">
+                             Back
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="breadcrumb-wrapper mb-30">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#"><%= view.menu %></a>
+                                </li>
+                                <li class="breadcrumb-item" aria-current="page">
+                                    <%= view.submenu %>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Update
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-style settings-card-2 mb-30">
+                    <form method="post" action="/<%= view.url %>/update" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <div class="row">	
+                            <% for(let x in vdata.columns) { %>
+                                <% if(vdata.types[x]=='text') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <input class="form-control" type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" placeholder="<%= vdata.values[x] || 'Isi Disini' %>" <%= vdata.isreqs[x] %>/>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='number') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <input class="form-control" type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" step=".1" placeholder="<%= vdata.values[x] || 'Isi Disini' %>" <%= vdata.isreqs[x] %>  onWheel="{ event => event.currentTarget.blur() }"  />
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='foto') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <input class="form-control" type="file" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" placeholder="Isi Disini" <%= vdata.isreqs[x] %>/>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='file') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns_name[x] %> <small><%= vdata.values[x] %></small></label>
+                                            <input class="form-control" type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" placeholder="Isi Disini" <%= vdata.isreqs[x] %>/>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='date') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <input class="form-control" type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" onfocus='this.showPicker()' placeholder="Isi Disini" <%= vdata.isreqs[x] %>/>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='time') { %>
+                                    <div class="col-12">
+                                        <div class="input-style-1">
+                                            <label><%= vdata.columns[x].toUpperCase().replace(/_/g, ' ') %></label>
+                                            <input class="form-control" type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>" onfocus='this.showPicker()' placeholder="Isi Disini" <%= vdata.isreqs[x] %>/>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='datalist'){ %>
+                                    <div class="col-12">
+                                        <div class="select-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <input type="text" name="<%= vdata.columns[x] %>" list="<%= vdata.columns[x] %>" <%= vdata.isreqs[x] %>>
+                                            <div class="select-position">
+                                                <datalist id="<%= vdata.columns[x] %>">
+                                                    <% for(let s in vdata.values[x]) {%>
+                                                    <option value="<%= s %>" <% if(eval('r1[0].'+vdata.columns[x])==s) {%> selected <%}%>  ><%= vdata.values[x][s] %></option>
+                                                    <% } %>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='select'){ %>
+                                    <div class="col-12">
+                                        <div class="select-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <!-- <div class="select-position"> -->
+                                                <select class="form-select" name="<%= vdata.columns[x] %>" <%= vdata.isreqs[x] %>>
+                                                    <% for(let s in vdata.values[x]) {%>
+                                                    <option value="<%= s %>" <% if(eval('r1[0].'+vdata.columns[x])==s) {%> selected <%}%>  ><%= vdata.values[x][s] %></option>
+                                                    <% } %>
+                                                </select>
+                                            <!-- </div> -->
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='select2'){ %>
+                                    <div class="col-12">
+                                        <div class="select-style-1">
+                                            <label><%= vdata.columns_name[x] %></label>
+                                            <!-- <div class="select-position"> -->
+                                                <select class="form-select js-select2" name="<%= vdata.columns[x] %>" <%= vdata.isreqs[x] %>>
+                                                    <% for(let s in vdata.values[x]) {%>
+                                                    <option value="<%= s %>" <% if(eval('r1[0].'+vdata.columns[x])==s) {%> selected <%}%>  ><%= vdata.values[x][s] %></option>
+                                                    <% } %>
+                                                </select>
+                                            <!-- </div> -->
+                                        </div>
+                                    </div>
+                                <% } else if(vdata.types[x]=='id'){ %>
+                                    <input type="hidden" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>">
+                                <% } else if(vdata.types[x]=='hidden'){ %>
+                                    <input type="<%= vdata.types[x] %>" name="<%= vdata.columns[x] %>" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>">
+                                <% } else if(vdata.types[x]=='disabled'){ %>
+                                    <input type="hidden" value="<%= eval('r1[0].'+vdata.columns[x]) || vdata.values[x] %>">
+                                <% } %>
+                            <% } %>
+                            <div class="col-12">
+                                <button class="main-btn primary-btn btn-hover" type="submit">Simpan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>
+<script>
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function() {
+        $('.js-select2').select2();
+    });
+</script>
