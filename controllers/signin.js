@@ -15,8 +15,9 @@ router.get('/', async function (req, res) {
 })
 
 router.get('/signout', async function (req, res) {
-	req.session.login = null
-	res.redirect('/signin')
+	req.session.destroy(function(err) {
+		res.redirect('/signin');
+	    });
 })
 
 router.post('/check', async function (req, res) {
@@ -40,7 +41,7 @@ router.post('/check', async function (req, res) {
 	}
 	else {
 		req.flash('info', 'User / password akun Anda salah!')
-		res.redirect('/signin')
+		res.redirect('/blank')
 	}
 	
 })

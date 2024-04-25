@@ -6,7 +6,7 @@ const formidableMiddleware = require('express-formidable');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const app = express();
-const port = process.env.port;
+const port = 3001;
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
@@ -52,6 +52,8 @@ app.use('/signin', require('./controllers/signin'));
 app.use('/role', require('./controllers/role'));
 app.use('/user', require('./controllers/user'));
 app.use('/blank', require('./controllers/blank'));
+app.use('/bank-sampah', require('./controllers/bank-sampah'));
+
 
 app.listen(port, () => {
   console.log(`Server is running, try access http://localhost:${port} on your browser`);
