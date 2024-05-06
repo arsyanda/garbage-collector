@@ -35,6 +35,8 @@ router.post('/check', async function (req, res) {
 		req.flash('info', `Selamat datang, ${req.session.login.USER_NAME}!`)
 		if(req.session.login.ROLE_NAME=='Admin') {
 			res.redirect('/user')
+		} else if (req.session.login.ROLE_NAME=='Pelanggan') {
+			res.redirect('/home_pelanggan')
 		} else {
 			res.redirect('/blank')
 		}

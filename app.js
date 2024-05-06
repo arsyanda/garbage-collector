@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
 	}
 });
 
-app.use('/', require('./controllers/signin'));
+app.use('/', require('./controllers/home'));
 app.use('/signin', require('./controllers/signin'));
 app.use('/role', require('./controllers/role'));
 app.use('/user', require('./controllers/user'));

@@ -5,11 +5,8 @@
 	</head>
 	<body>
 		<%- include('parts/preloader') %>	
-		<% if(!view.isfullwidth) { %>
-			<%- include('parts/sidebar') %>
-		<% } %>
 		<!-- ======== main-wrapper start =========== -->
-		<main class="main-wrapper" <%- view.isfullwidth %>>
+		<main <%- view.isfullwidth %>>
 			<% if(!view.isfullwidth) { %>
 				<%- include('parts/topbar') %>
 			<% } %>
