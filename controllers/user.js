@@ -100,11 +100,9 @@ router.post('/create', async function (req, res, next) {
 				kolom = kolom + ',' + kolom1;
 				nilai = nilai + ',' + nilai1;
 			}
-			console.log(`insert into ${vdata.table} ( ${kolom} ) values ( ${nilai} )`)
 			rs = await asyncFB.doQuery(`insert into ${vdata.table} ( ${kolom} ) values ( ${nilai} )`, []);
 			req.flash(`success`, `Berhasil menambahkan data`);
 		} catch (err) {
-			console.log(err);
 			req.flash(`error`, `Gagal menambahkan data<br><br><small>${err.stack.split(' at')[0]}</small>`);
 		} finally {
 			res.redirect(`/${view.url}`);
@@ -131,18 +129,62 @@ router.post('/update', async function (req, res, next) {
 				}
 			}
 			updatedoc = docs.join(', ');
-			console.log(`update ${vdata.table} set ${updateset} where ${view.url}_rid='${req.fields[`${view.url.toUpperCase()}_RID`]}'`)
 			rs = await asyncFB.doQuery(`update ${vdata.table} set ${updateset} where ${view.url}_rid='${req.fields[`${view.url.toUpperCase()}_RID`]}'`, []);
 			if (docs.length > 0) {
 				rs1 = await asyncFB.doQuery(`update ${vdata.table} set ${updatedoc} where ${view.url}_id='${req.fields[`${view.url.toUpperCase()}_RID`]}'`, []);
 			}
 			req.flash(`success`, `Berhasil mengubah data`);
 		} catch (err) {
-			console.log(err);
 			req.flash(`error`, `Gagal mengubah data<br><br><small>${err.stack.split(' at')[0]}</small>`);
 		} finally {
 			res.redirect(`/${view.url}`);
 		}
 	}
 });
+
+router.get('/get-by-komplek/:komplekID', async function (req, res) {
+	let s1 = `select * from ${vdata.table} where komplek=?`
+	let p1 = [req.params.komplekID]
+	let r1 = await asyncFB.doQuery(s1, p1)
+	res.json(r1);
+});
+
+router.get('/get-alamat/:userID', async function (req, res) {
+	let s1 = `select a.alamat_rid, a.jalan, a.kecamatan, a.kelurahan, a.kota, a.provinsi, a.kode_pos
+	from TB_ALAMAT a INNER JOIN TB_USER u ON u.alamat = a.alamat_RID where user_rid=?`
+	let p1 = [req.params.userID]
+	let r1 = await asyncFB.doQuery(s1, p1)
+	res.json(r1);
+});
+
+router.get('/total-petugas', async function (req, res) {
+	try {
+		let s1 = `
+			SELECT COUNT(USER_RID) as JUMLAH
+			FROM TB_USER
+			WHERE USER_ROLE = ?
+		`;
+		let p1 = [2]
+		let r1 = await asyncFB.doQuery(s1, p1)
+		res.status(200).json(r1[0]);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/pekerja-komplek/:komplekID', async function (req, res) {
+	try {
+		let s1 = `
+			SELECT USER_RID, USER_NAME
+			FROM TB_USER
+			WHERE USER_ROLE = ? AND KOMPLEK = ?
+		`;
+		let p1 = [2, req.params.komplekID]
+		let r1 = await asyncFB.doQuery(s1, p1)
+		res.status(200).json(r1);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
 module.exports = router;

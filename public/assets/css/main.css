@@ -10,7 +10,7 @@ body {
   font-family: "Plus Jakarta Sans", sans-serif !important;
   font-weight: normal;
   font-style: normal;
-  color: #5d657b;
+  color:black;
   overflow-x: hidden;
   background: #f1f5f9;
 }
@@ -21,6 +21,18 @@ body {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+nav, section {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+@media only screen and (max-width: 768px) {
+  nav, section {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 }
 
 a:focus,
@@ -115,6 +127,14 @@ p {
 }
 
 /* ========== cart style ========== */
+.card-gray {
+  background: rgba(255, 255, 255, 1);
+  box-sizing: border-box;
+  padding: 25px 30px;
+  position: relative;
+  box-shadow: 0px 12px 24px -4px rgba(145, 158, 171, 0.12), 0px 0px 2px 0px rgba(145, 158, 171, 0.2);
+}
+
 .card-style {
   background: #fff;
   box-sizing: border-box;
@@ -1569,6 +1589,15 @@ h6,
 }
 
 /* ========== cards css =========== */
+
+.card {
+  border: 1px solid inherit;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card-gray-bg {
+  background: rgba(236, 236, 236, 0.5);
+}
 /* card-style-1 */
 .card-style-1 {
   background: #fff;
@@ -2433,6 +2462,27 @@ h6,
 }
 
 /* =========== tables css =========== */
+
+.table-style-1 {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.table-style-1 tbody > tr > td.rad-left {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.table-style-1 tbody > tr > td.rad-right {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.table-style-1 tbody > tr > td.vert-aligned {
+  vertical-align: middle;
+  text-align: center;
+}
+
 .table {
   border-collapse: inherit;
   border-spacing: 0px;
@@ -3893,7 +3943,7 @@ h6,
 /* ========== header css ========== */
 .header {
   padding: 22px 0;
-  background: #fff;
+  background: rgba(91, 180, 210, 0.53);
   position: sticky;
   top: 0;
   z-index: 99;
@@ -4174,6 +4224,35 @@ h6,
   text-align: left;
 }
 
+.header .header-logo {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.header .header-title {
+  font-size: 2rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .header .header-logo {
+      max-width: 70px; 
+      max-height: 70px; 
+  }
+
+  .header .header-title {
+    display: none;
+  }
+
+  .header-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .card-title, .nav-title{
+    font-size: 1rem;
+  }
+
+}
 /* ========= Dark Theme Css ========== */
 .darkTheme .header {
   background: #14142D;
@@ -4358,7 +4437,6 @@ h6,
 }
 
 .cards-title {
-  font-size: 18px;
   line-height: 22px;
 }
 
@@ -8839,31 +8917,31 @@ h6,
 }
 
 .bg-primary-300 {
-  background: rgba(54, 92, 245, 0.3);
+  background: rgba(91, 180, 210, 0.3);
 }
 
 .bg-primary-400 {
-  background: rgba(54, 92, 245, 0.4);
+  background: rgba(91, 180, 210, 0.4) !important;
 }
 
 .bg-primary-500 {
-  background: rgba(54, 92, 245, 0.5);
+  background: rgba(91, 180, 210, 0.5);
 }
 
 .bg-primary-600 {
-  background: rgba(54, 92, 245, 0.6);
+  background: rgba(91, 180, 210, 0.6);
 }
 
 .bg-primary-700 {
-  background: rgba(54, 92, 245, 0.7);
+  background: rgba(91, 180, 210, 0.7);
 }
 
 .bg-primary-800 {
-  background: rgba(54, 92, 245, 0.8);
+  background: rgba(91, 180, 210, 0.8);
 }
 
 .bg-primary-900 {
-  background: rgba(54, 92, 245, 0.9);
+  background: rgba(91, 180, 210, 0.9);
 }
 
 /* ======= bg-secondary shades ========= */
@@ -9139,7 +9217,7 @@ h6,
 }
 
 .bg-orange-400 {
-  background: rgba(242, 153, 74, 0.4);
+  background: rgba(242, 153, 74, 0.4) !important;
 }
 
 .bg-orange-500 {
@@ -9163,6 +9241,10 @@ h6,
 }
 
 /* ======== Background Colors ========== */
+.no-bg {
+  background-color: transparent;
+}
+
 .primary-bg {
   background-color: #365CF5;
 }
@@ -9311,7 +9393,10 @@ h6,
 .text-photo {
   color: #93cfe2 !important;
 }
-
+/* ========= Text Shadow =========== */
+.shadow-text {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
 /* ========= Font Weight =========== */
 .fw-300 {
   font-weight: 300;

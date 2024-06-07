@@ -1,0 +1,107 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <h2 class="text-gray">Form Tambah Task</h2>
+                        <div class="mt-4">
+                            <form method="post" action="/task/create" enctype="application/json" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="komplek-penyumbang" class="form-label">Komplek</label>
+                                        <select class="form-control" name="komplek" id="komplek-penyumbang" required>
+                                            <option value="" disabled selected>Pilih Komplek</option>
+                                            <% for(let k in komplek) {%>
+                                                <option value="<%= komplek[k].KOMPLEK_RID %>"><%= komplek[k].NAMA_KOMPLEK %></option>
+                                            <% } %>
+                                        </select>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="task-worker" class="form-label">Pekerja</label>
+                                        <select class="form-control" name="task_worker" id="task-worker" required></select>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="alamat-rumah" class="form-label">Alamat Rumah</label>
+                                        <select class="form-control" name="alamat" id="alamat-rumah" required></select>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="deadline" class="form-label">Deadline</label>
+                                        <input type="date" class="form-control" name="task_deadline" id="deadline" required>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const komplekSelect = document.getElementById('komplek-penyumbang');
+    const alamatSelect = document.getElementById('alamat-rumah');
+    const workerSelect = document.getElementById('task-worker');
+
+    komplekSelect.addEventListener('change', function() {
+        const selectedKomplek = komplekSelect.value;
+
+        fetch(`/user/pekerja-komplek/${selectedKomplek}`)
+            .then(response => response.json())
+            .then(data => {
+                workerSelect.innerHTML = '<option value="" disabled selected>Pilih Pekerja</option>';
+                data.forEach(worker => {
+                    const option = document.createElement('option');
+                    option.value = worker.USER_RID;
+                    option.textContent = `${worker.USER_NAME}`;
+                    workerSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching alamat data:', error);
+            });
+    });
+
+    komplekSelect.addEventListener('change', function() {
+        const selectedKomplek = komplekSelect.value;
+
+        fetch(`/alamat/semua-alamat/${selectedKomplek}`)
+            .then(response => response.json())
+            .then(data => {
+                alamatSelect.innerHTML = '<option value="" disabled selected>Pilih Alamat</option>';
+                data.forEach(alamat => {
+                    const option = document.createElement('option');
+                    option.value = alamat.ALAMAT_RID;
+                    option.textContent = `${alamat.JALAN}, ${alamat.KELURAHAN}, ${alamat.KECAMATAN}, ${alamat.KOTA}, ${alamat.PROVINSI}, ${alamat.KODE_POS}`;
+                    alamatSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching alamat data:', error);
+            });
+    });
+});
+</script>
+<script>
+    (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>

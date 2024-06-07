@@ -1,0 +1,61 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <div class="row mb-2">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <h3 class="text-gray"><b>Riwayat Data Sampah</b></h3>
+                                <a class="btn btn-primary" href="/sampah/create">Tambah Data Sampah</a>
+                            </div>
+                        </div>
+                        <div class="table-wrapper table-responsive" style="display: grid;">
+                            <table id="thetable" class="table-style-1 stripe nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Tanggal</th>
+                                        <th class="text-center">Berat</th>
+                                        <th class="text-center">Lokasi</th>
+                                        <th class="text-center">Nama Penyumbang</th>
+                                        <!-- <th class="text-center">Action</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% adjustedResults.forEach((item, index) => { %>
+                                        <tr class="<%= index % 2 === 0 ? 'bg-primary-400' : 'bg-orange-400' %>" style="border-radius: 8px;">
+                                            <td class="text-center rad-left no-bg" style="padding: 10px;"><%= item.WAKTU %></td>
+                                            <td class="text-center" style="padding: 10px;"><%= item.BERAT_SAMPAH %> Kg</td>
+                                            <td class="text-center" style="padding: 10px;">
+                                                <div><%= item.NAMA_KOMPLEK %></div>
+                                                <div class="text-gray" style="font-size: 0.85em;"><%= `${item.JALAN}, ${item.KECAMATAN}, ${item.KELURAHAN}, ${item.KOTA}, ${item.PROVINSI}, ${item.KODE_POS}` %></div>
+                                            </td>
+                                            <td class="text-center" style="padding: 10px;"><%= item.USER_NAME %></td>
+                                            <!-- <td class="vert-aligned rad-right" >
+                                                <a class="btn btn-primary text-white mr-5" href="/<%= view.url %>/update/<%= item.SAMPAH_RID %>">
+                                                    <i class="lni lni-pencil"></i>
+                                                </a>
+                                            </td> -->
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#thetable').DataTable({
+            "stripeClasses": ['bg-primary-400', 'bg-orange-400'],
+            "paging": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "order": [[0, 'desc']],
+        });
+    });
+</script>

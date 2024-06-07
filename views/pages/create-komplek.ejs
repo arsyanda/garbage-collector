@@ -1,0 +1,62 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <h2 class="text-gray">Form Input Data Komplek</h2>
+                        <div class="mt-4">
+                            <form method="post" action="/komplek/create" enctype="application/json" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Nama Komplek</label>
+                                        <input type="text" class="form-control" name="nama_komplek" placeholder="Masukan Nama Komplek" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Provinsi</label>
+                                        <input type="text" class="form-control" name="provinsi" id="provinsi" placeholder="Masukan Provinsi" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kota" class="form-label">Kota</label>
+                                        <input type="text" class="form-control" name="kota" id="kota" placeholder="Masukan Kota" required>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kelurahan" class="form-label">Kelurahan</label>
+                                        <input type="text" class="form-control" name="kelurahan" id="kelurahan" placeholder="Masukan Kelurahan" required>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kecamatan" class="form-label">Kecamatan</label>
+                                        <input type="text" class="form-control" name="kecamatan" id="kecamatan" placeholder="Masukan Kecamatan" required>   
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>

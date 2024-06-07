@@ -1,0 +1,178 @@
+<style>
+    .custom-card {
+        background: rgba(236, 236, 236, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border: 1px solid inherit;
+    }
+    .custom-card .image-btn {
+        background: rgba(200, 200, 200, 0.9);
+        display: inline-block;
+        margin-right: 20px;
+    }
+    .custom-card .image-btn:hover {
+        background: rgba(180, 180, 180, 0.9);
+    }
+    .custom-card img {
+        width: 50px;
+        height: 50px;
+    }
+    .custom-card h3 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+    @media (max-width: 768px) {
+        .custom-card h3 {
+            font-size: 0.9rem;
+        }
+
+        .custom-card h2 {
+            font-size: 1rem;
+        }
+    }
+    .custom-card .percentage {
+        color: green;
+        font-size: 0.9rem;
+    }
+    .task-table th, .task-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .task-table th {
+        background-color: #cfcfcf;
+    }
+    .task-table td {
+        background-color: #f8f9fa;
+    }
+    .task-table .task {
+        background-color: #ffffe0;
+    }
+    .task-table .task:nth-child(even) {
+        background-color: #e0ffe0;
+    }
+</style>
+<section class="section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="custom-card">
+                    <a href="/sampah" class="btn image-btn">
+                        <img src="assets/images/logo/trash-can.png" alt="Trash Icon">
+                    </a>
+                    <div>
+                        <h3>Input Data Sampah Bulan Ini</h3>
+                        <h2 id="berat-data"></h2>
+                        <!-- <p class="percentage">↑ 9.4% Meningkat sebanyak 12.1 Kg</p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">List Task</h3>
+                                <!-- <p class="card-title">Done: <b>74 Task</b></p> -->
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="thetable" class="table-style-1 stripe nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Task</th>
+                                        <th class="text-center">Deadline</th>
+                                        <th class="text-center">Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<% if (view.page === 'home-pekerja') { %>
+    <script>
+      $(document).ready(function() {
+          function fetchWeightData() {
+              $.ajax({
+                  url: '/sampah/data-petugas-per-bulan',
+                  method: 'GET',
+                  success: function(response) {
+                    const berat = response.BERAT
+                    if (berat == null) {
+                        $('#berat-data').html(`<b>0 Kg</b>`);
+                    } else {
+                        $('#berat-data').html(`<b>${berat} Kg</b>`);
+                    }
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+          
+          function fetchTaskData() {
+              $.ajax({
+                  url: '/task/get-worker-task',
+                  method: 'GET',
+                  success: function(response) {
+                    response.forEach(task => {
+                        const deadlineDate = new Date(task.TASK_DEADLINE);
+                        const formattedDate = deadlineDate.toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                        const row = `
+                            <tr>
+                                <td class="text-center">
+                                    <div>Mengumpulkan sampah rumah ${task.JALAN}</div>
+                                    <div>Komplek ${task.NAMA_KOMPLEK}</div>
+                                </td>
+                                <td class="text-center">${formattedDate}</td>
+                                <td class="text-center">${task.TASK_STATUS}</td>
+                                <td>
+                                    <form action="/sampah/create" method="GET">
+                                        <input type="hidden" name="task_id" value="${task.TASK_RID}">
+                                        <button type="submit" class="btn btn-success">Selesaikan</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        `;
+                        $('#thetable tbody').append(row);
+                    });
+
+                    $('#thetable').DataTable({
+                        "stripeClasses": ['bg-primary-400', 'bg-orange-400'],
+                        "paging": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "order": [],
+                        "columnDefs": [
+                            { "orderable": true, "targets": 1 },  
+                            { "orderable": false, "targets": '_all' }
+                        ]
+                    });
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+
+          fetchWeightData();
+          fetchTaskData();
+      });
+    </script>
+  <% } %>

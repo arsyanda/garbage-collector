@@ -1,0 +1,122 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <h2 class="text-gray">Form Input Data Sampah</h2>
+                        <div class="mt-4">
+                            <form method="post" action="/sampah/create" enctype="application/json" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Berat Sampah</label>
+                                        <input type="number" class="form-control" id="berat-sampah" name="berat_sampah" placeholder="... Kg" min="0" step="any" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="komplek-penyumbang" class="form-label">Komplek</label>
+                                        <input type="hidden" class="form-control" name="komplek_penyumbang" value="<%= formData.KOMPLEK_RID%>">
+                                        <input type="text" class="form-control" id="komplek-penyumbang" value="<%= formData.NAMA_KOMPLEK%>" readonly required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="nama-penyumbang" class="form-label">Penyumbang</label>
+                                        <input type="hidden" class="form-control" name="penyumbang" value="<%= formData.USER_RID%>">
+                                        <input type="text" class="form-control" id="nama-penyumbang" value="<%= formData.USER_NAME%>" readonly required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="alamat-penyumbang" class="form-label">Alamat Rumah</label>
+                                        <input type="hidden" class="form-control" name="alamat_penyumbang" value="<%= formData.ALAMAT_RID%>">
+                                        <input type="text" class="form-control" id="alamat-penyumbang" value="<%= formData.ALAMAT%>" readonly required>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const komplekSelect = document.getElementById('komplek-penyumbang');
+    const penyumbangSelect = document.getElementById('nama-penyumbang');
+    const alamatField = document.getElementById('alamat-rumah-visible');
+    const alamatHiddenField = document.getElementById('alamat-rumah-hidden');
+    const waktuInput = document.getElementById('waktu');
+
+    function formatDateTime(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    waktuInput.value = formatDateTime(new Date());
+    komplekSelect.addEventListener('change', function() {
+        const selectedKomplek = komplekSelect.value;
+
+        fetch(`/user/get-by-komplek/${selectedKomplek}`)
+            .then(response => response.json())
+            .then(data => {
+                penyumbangSelect.innerHTML = '<option value="" disabled selected>Pilih Penyumbang</option>';
+                data.forEach(penyumbang => {
+                    const option = document.createElement('option');
+                    option.value = penyumbang.USER_RID;
+                    option.textContent = penyumbang.USER_NAME;
+                    penyumbangSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching penyumbang data:', error);
+            });
+    });
+
+    penyumbangSelect.addEventListener('change', function() {
+        const selectedPenyumbang = penyumbangSelect.value;
+
+        fetch(`/user/get-alamat/${selectedPenyumbang}`)
+            .then(response => response.json())
+            .then(data => {
+                const result = data[0]
+                if (result) {
+                    alamatField.value = result.JALAN + ', ' + result.KECAMATAN + ', ' + result.KELURAHAN + ', ' + result.KOTA + ', ' + result.PROVINSI + ', ' + result.KODE_POS;
+                    alamatHiddenField.value = result.ALAMAT_RID;
+                } else {
+                    alamatField.value = '';
+                    alamatHiddenField.value = '';
+                    console.error('No address found for selected penyumbang');
+                }
+            })
+            .catch(error => {
+                alamatField.value = '';
+                alamatHiddenField.value = '';
+                console.error('Error fetching alamat data:', error);
+            });
+    });
+});
+</script>
+<script>
+    (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>

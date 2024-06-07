@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .error-code {
+            font-size: 10rem;
+            font-weight: bold;
+            color: #ff4757;
+        }
+        .error-message {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .error-description {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .btn-home {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-home:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="error-code"><%= view.errorCode %></h1>
+            <p class="error-message"><%= view.errorMessage %></p>
+            <p class="error-description"><%= view.errorDescription %></p>
+            <a href="<%= view.redirect %>" class="btn-home">Go to Home</a>
+        </div>
+    </section>
+</body>
+</html>
