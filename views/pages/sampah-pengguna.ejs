@@ -15,8 +15,8 @@
                                     <tr>
                                         <th class="text-center">Tanggal</th>
                                         <th class="text-center">Berat</th>
-                                        <th class="text-center">Lokasi</th>
-                                        <th class="text-center">Nama Penyumbang</th>
+                                        <!-- <th class="text-center">Lokasi</th> -->
+                                        <th class="text-center">Nama Pekerja</th>
                                         <!-- <th class="text-center">Action</th> -->
                                     </tr>
                                 </thead>
@@ -25,10 +25,10 @@
                                         <tr class="<%= index % 2 === 0 ? 'bg-primary-400' : 'bg-orange-400' %>" style="border-radius: 8px;">
                                             <td class="text-center rad-left no-bg" style="padding: 10px;"><%= item.WAKTU %></td>
                                             <td class="text-center" style="padding: 10px;"><%= item.BERAT_SAMPAH %> Kg</td>
-                                            <td class="text-center" style="padding: 10px;">
+                                            <!-- <td class="text-center" style="padding: 10px;">
                                                 <div><%= item.NAMA_KOMPLEK %></div>
                                                 <div class="text-gray" style="font-size: 0.85em;"><%= `${item.JALAN}, ${item.KECAMATAN}, ${item.KELURAHAN}, ${item.KOTA}, ${item.PROVINSI}, ${item.KODE_POS}` %></div>
-                                            </td>
+                                            </td> -->
                                             <td class="text-center" style="padding: 10px;"><%= item.USER_NAME %></td>
                                             <!-- <td class="vert-aligned rad-right" >
                                                 <a class="btn btn-primary text-white mr-5" href="/<%= view.url %>/update/<%= item.SAMPAH_RID %>">

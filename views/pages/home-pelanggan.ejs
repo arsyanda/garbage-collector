@@ -1,0 +1,235 @@
+<style>
+    .custom-card {
+        background: rgba(236, 236, 236, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border: 1px solid inherit;
+    }
+    .custom-card .image-btn {
+        background: rgba(200, 200, 200, 0.9);
+        display: inline-block;
+        margin-right: 20px;
+    }
+    .custom-card .image-btn:hover {
+        background: rgba(180, 180, 180, 0.9);
+    }
+    .custom-card img {
+        width: 50px;
+        height: 50px;
+    }
+    .custom-card h3 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+    @media (max-width: 768px) {
+        .custom-card h3 {
+            font-size: 0.9rem;
+        }
+
+        .custom-card h2 {
+            font-size: 1rem;
+        }
+    }
+    .custom-card .percentage {
+        color: green;
+        font-size: 0.9rem;
+    }
+    .task-table th, .task-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .task-table th {
+        background-color: #cfcfcf;
+    }
+    .task-table td {
+        background-color: #f8f9fa;
+    }
+    .task-table .task {
+        background-color: #ffffe0;
+    }
+    .task-table .task:nth-child(even) {
+        background-color: #e0ffe0;
+    }
+    #card-pelanggan {
+        background: rgba(236, 236, 236, 0.5);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border: 1px solid inherit;
+    }
+    #card-pelanggan h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #6c757d;
+    }
+    #card-pelanggan p {
+        margin: 10px 0;
+    }
+    .highlight {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #000;
+    }
+    .subtext {
+        font-size: 1rem;
+        color: #555;
+    }
+    .progress {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    .progress img {
+        width: 100px;
+        height: 100px;
+    }
+    .update {
+        color: #dc3545;
+        font-size: 0.9rem;
+        margin-top: 20px;
+    }
+    .update span {
+        color: #000;
+    }
+    .bottom-right-img {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        width: 150px;
+        height: auto;
+    }
+    @media (max-width: 1024px) {
+        .bottom-right-img {
+            display: none;
+        }
+
+        #berat-total {
+            text-align: center;
+        }
+    }
+    .progress .progress-bar {
+        height: 100%;
+        transition: width 0.6s ease;
+    }
+    .progress .green-bar {
+        background-color: #28a745;
+        left: 0;
+    }
+    .progress .red-bar {
+        background-color: #dc3545;
+        right: 0;
+    }
+</style>
+<section class="section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="custom-card">
+                    <a href="/sampah" class="btn image-btn">
+                        <img src="assets/images/logo/trash-can.png" alt="Trash Icon">
+                    </a>
+                    <div>
+                        <h3>Total Sampah Terkumpul Minggu Ini (Pribadi)</h3>
+                        <h2 id="berat-data"></h2>
+                        <!-- <p class="percentage">↑ 9.4% Meningkat sebanyak 12.1 Kg</p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card" id="card-pelanggan">
+                    <h2>Kontribusi Sampah Anda Minggu Ini</h2>
+                    <p class="subtext">Jumlah Berat Sampah di Komplek <%= data.NAMA_KOMPLEK %></p>
+                        <p class="highlight" style="text-align: center;margin-top: 7%;" id="contribution-percentage">0%</p>
+                    <div class="progress" style="margin-top: 8%;">
+                        <div class="progress-bar green-bar" id="green-bar" style="width: 0%;"></div>
+                        <div class="progress-bar red-bar" id="red-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card" id="card-pelanggan">
+                    <h2>Sampah Terkumpul di Komplek <%= data.NAMA_KOMPLEK %></h2>
+                    <p class="subtext">Jumlah Berat Sampah di Komplek <%= data.NAMA_KOMPLEK %></p>
+                    <p id="berat-total" class="highlight" style="margin-top: 5%; margin-bottom: 10%;"></p>
+                    <img src="assets/images/logo/trash-bags.png" alt="Trash Bags" class="bottom-right-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<% if (view.page === 'home-pelanggan') { %>
+    <script>
+      $(document).ready(function() {
+          function fetchWeightData() {
+              $.ajax({
+                  url: '/sampah/data-pelanggan-per-minggu',
+                  method: 'GET',
+                  success: function(response) {
+                    const berat = response.BERAT
+                    if (berat == null) {
+                        $('#berat-data').html(`<b>0 Kg</b>`);
+                    } else {
+                        $('#berat-data').html(`<b>${berat} Kg</b>`);
+                    }
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+          
+          function fetchTotalWeightData() {
+              $.ajax({
+                  url: '/sampah/total-sampah-user',
+                  method: 'GET',
+                  success: function(response) {
+                    const total = response.TOTAL
+                    if (total == null) {
+                        $('#berat-total').html(`<b>0 Kg</b>`);
+                    } else {
+                        $('#berat-total').html(`<b>${total} Kg</b>`);
+                    }
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+
+          function fetchContributionData() {
+              $.ajax({
+                  url: '/sampah/kontribusi-user-per-minggu',
+                  method: 'GET',
+                  success: function(response) {
+                    const sampah_user = response.SAMPAH_USER;
+                    const total = response.TOTAL_SAMPAH;
+
+                    if (sampah_user == null || total == null) {
+                        $('#contribution-percentage').html('0%');
+                        $('#green-bar').css('width', '0%');
+                        $('#red-bar').css('width', '100%');
+                    } else {
+                        const percentage = (sampah_user / total) * 100;
+                        $('#contribution-percentage').html(`${percentage.toFixed(1)}%`);
+                        $('#green-bar').css('width', `${percentage.toFixed(1)}%`);
+                        $('#red-bar').css('width', `${(100 - percentage).toFixed(1)}%`);
+                    }
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+
+          fetchWeightData();
+          fetchTotalWeightData();
+          fetchContributionData();
+      });
+    </script>
+  <% } %>

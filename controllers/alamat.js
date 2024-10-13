@@ -45,8 +45,8 @@ router.get('/generate-qr/:alamatID', async function (req, res) {
 	delete formData.KODE_POS;
 	formData.ALAMAT = alamat
 	const queryString = new URLSearchParams(formData).toString();
-	const url = `${req.protocol}://192.168.1.14:3001/sampah/create?source=qr&${queryString}`;
-	console.log(url)
+	const url = `${req.protocol}://192.168.1.18:3001/sampah/create?source=qr&${queryString}`;
+	
 	try {
         const qrCodeData = await QRCode.toDataURL(url);
         res.send(`<img src="${qrCodeData}" alt="QR Code">`);

@@ -1,0 +1,71 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <h2 class="text-gray">Form Input Data Pekerja</h2>
+                        <div class="mt-4">
+                            <form method="post" action="/user/pekerja/create" enctype="application/json" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Nama Pekerja</label>
+                                        <input type="text" class="form-control" name="USER_NAME" placeholder="Masukan Nama Lengkap Pekerja" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Username</label>
+                                        <input type="text" class="form-control" name="USER_USERNAME" id="USER_USERNAME" placeholder="Username untuk Log In" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Nomor Telepon</label>
+                                        <input type="number" class="form-control" name="USER_PHONE" id="USER_PHONE" placeholder="Masukkan Nomor Telepon Pekerja" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Password</label>
+                                        <input type="password" class="form-control" name="USER_PASSWORD" id="USER_PASSWORD" placeholder="Password untuk Log In" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="USER_EMAIL" placeholder="Masukan Email Pekerja" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="komplek-penyumbang" class="form-label">Tempat Biodigester</label>
+                                        <select class="form-control" name="komplek" id="komplek-penyumbang" required>
+                                            <option value="" disabled selected>Pilih Komplek</option>
+                                            <% for(let d in data) {%>
+                                                <option value="<%= data[d].KOMPLEK_RID %>"><%= data[d].NAMA_KOMPLEK %></option>
+                                            <% } %>
+                                        </select>   
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>

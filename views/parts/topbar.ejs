@@ -138,26 +138,38 @@
                     <h3 class="card-title">Welcome to Rizqi Semesta</h3>
                 </div>
             </div>
+            <% if (view.back) { %>
+              <div style="margin-top: 20px;">
+                <a href="<%= view.back %>" style="padding: 10px 20px; background-color: rgba(91, 180, 210, 0.53); color: black; border: black; border-radius: 5px; cursor: pointer; text-decoration: none;">
+                  Kembali
+                </a>
+              </div>
+            <% } %>
             <% if (view.page === 'home-pekerja') { %>
               <div class="mt-4 mt-sm-0 mb-2 mb-sm-0">
                 <h4 class=" fw-500 text-gray shadow-text">Data Sampah Keseluruhan:</h4>
+              </div>
+            <% } %>
+            <% if (view.page === 'home-pelanggan') { %>
+              <div class="mt-4 mt-sm-0 mb-2 mb-sm-0">
+                <h4 class=" fw-500 text-gray shadow-text">Data Sampah Anda:</h4>
               </div>
             <% } %>
         </div>
         <% if (view.page === 'home-pekerja' || view.page === 'home-admin') { %>
           <div class="col w-100">
             <div class="card card-gray-bg" style="color: black;">
-                <div class="px-2">
-                  <div class="card-body">
-                    <h5 class="card-title"><b>User yang sudah mengumpulkan sampah</b></h5>
-                  </div>
+              <div class="px-2">
+                <div class="card-body">
+                  <h5 class="card-title"><b>User yang sudah mengumpulkan sampah</b></h5>
                 </div>
-                <div class="p-4">
-                  <div class="progress" id="progress-bar">
-                    <div class="progress-bar progress-bar-belum" role="progressbar" id="progress-bar-belum" aria-valuemin="0" aria-valuemax="100"></div>
-                    <div class="progress-bar progress-bar-sudah" role="progressbar" id="progress-bar-sudah" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
+              </div>
+              <div class="p-4">
+                <div class="progress" id="progress-bar">
+                  <div class="progress-bar progress-bar-belum" role="progressbar" id="progress-bar-belum" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar progress-bar-sudah" role="progressbar" id="progress-bar-sudah" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+              </div>
               <div class="progress-container px-4">
                   <div class="progress-text" id="text-belum">
                       <img src="https://img.icons8.com/color/20/000000/sad.png" alt="Belum Icon">
@@ -171,6 +183,23 @@
             </div>
           </div>
         <% } %>
+        <% if (view.page === 'home-pelanggan') { %>
+          <div class="col w-100">
+            <div class="card card-gray-bg" style="color: black; background: rgba(91, 180, 210, 0.53);">
+              <div class="px-2">
+                <div class="card-body">
+                  <h5 class="card-title"><b>Riwayat Sampah</b></h5>
+                </div>
+              </div>
+              <div class="p-4">
+                <h6 id="riwayat-sampah-pribadi"></h6>
+              </div>
+              <div class="progress-container px-4">
+                  
+              </div>
+            </div>
+          </div>
+        <% } %>
       </div>
   </div>
 </nav>
@@ -179,7 +208,7 @@
     $(document).ready(function() {
         function fetchProgressData() {
             $.ajax({
-                url: '/sampah/data-user-per-minggu',
+                url: '/sampah/data-user-per-hari',
                 method: 'GET',
                 success: function(response) {
                   const total = response.belum + response.sudah;
@@ -190,6 +219,32 @@
                   $('#progress-bar-sudah').css('width', sudahPercent + '%').attr('aria-valuenow', sudahPercent);
                   $('#belum-count').text(response.belum);
                   $('#sudah-count').text(response.sudah.toLocaleString());
+                },
+                error: function(error) {
+                  console.error('Error fetching progress data:', error);
+                }
+            });
+        }
+
+        fetchProgressData();
+    });
+  </script>
+<% } %>
+
+<% if (view.page === 'home-pelanggan') { %>
+  <script>
+    $(document).ready(function() {
+        function fetchProgressData() {
+            $.ajax({
+                url: '/sampah/data-user-hari-ini',
+                method: 'GET',
+                success: function(response) {
+                  const berat = response.BERAT_SAMPAH
+                  if (berat == null) {
+                      $('#riwayat-sampah-pribadi').html(`Tidak ada sampah yang dikumpulkan hari ini atau sampah belum diambil.`);
+                  } else {
+                      $('#riwayat-sampah-pribadi').html(`Berat sampah yang diambil hari ini adalah <b>${response.BERAT_SAMPAH}</b> Kg diambil oleh ${response.USER_NAME}`);
+                  }
                 },
                 error: function(error) {
                   console.error('Error fetching progress data:', error);

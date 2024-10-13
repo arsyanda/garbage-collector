@@ -3,12 +3,13 @@ const router = express.Router({ mergeParams: true })
 const asyncFB = require('../models/async-firebird')
 
 let baseView = {
-	title: 'Komplek',
+	title: 'Biodigester',
 	menu: '',
 	submenu: '',
-	page: 'komplek',
-	url: 'komplek',
+	page: 'biodigester',
+	url: 'biodigester',
 	isfullwidth: null,
+	back: '',
 }
 
 let vdata = {
@@ -21,7 +22,7 @@ let vdata = {
 }
 
 router.get('/', async function (req, res) {
-    const view = { ...baseView, title:'Data Komplek', page: 'komplek' };
+    const view = { ...baseView, title:'Data Komplek', page: 'komplek', back: '/home-admin' };
     const s1 =`
         SELECT * FROM ${vdata.table}
     `
@@ -31,7 +32,7 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/create', async function (req, res) {
-    const view = { ...baseView, title:'Tambah Data Komplek', page: 'create-komplek' };
+    const view = { ...baseView, title:'Tambah Data Komplek', page: 'create-komplek', back: '/komplek' };
 
     res.render('html', { view });
 });

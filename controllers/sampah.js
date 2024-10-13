@@ -22,13 +22,24 @@ let vdata = {
 
 
 router.get('/', async function (req, res) {
-	const view = { ...baseView, title:'Riwayat Data Sampah', page: 'sampah' };
-
-	let s1 = `select s.SAMPAH_RID, s.WAKTU, s.BERAT_SAMPAH, k.NAMA_KOMPLEK, a.jalan, a.kecamatan, a.kelurahan, a.kota, a.provinsi, a.kode_pos, u.USER_NAME
-	from TB_SAMPAH s INNER JOIN TB_KOMPLEK k on s.KOMPLEK_PENYUMBANG = k.KOMPLEK_RID INNER JOIN TB_ALAMAT a on s.ALAMAT_PENYUMBANG = a.ALAMAT_RID
-	INNER JOIN TB_USER u on s.PENYUMBANG = u.USER_RID where pekerja=? order by s.waktu desc`
-	let p1 = [req.session.login.USER_RID]
-	let data = await asyncFB.doQuery(s1, p1)
+	let view = {};
+	let data = {};
+	if (req.session.login.ROLE_NAME == "Pelanggan") {
+		view = { ...baseView, title:'Riwayat Data Sampah', page: 'sampah-pengguna' };
+		let s1 = `select s.SAMPAH_RID, s.WAKTU, s.BERAT_SAMPAH, k.NAMA_KOMPLEK, a.jalan, a.kecamatan, a.kelurahan, a.kota, a.provinsi, a.kode_pos, u.USER_NAME
+		from TB_SAMPAH s INNER JOIN TB_KOMPLEK k on s.KOMPLEK_PENYUMBANG = k.KOMPLEK_RID INNER JOIN TB_ALAMAT a on s.ALAMAT_PENYUMBANG = a.ALAMAT_RID
+		INNER JOIN TB_USER u on s.PEKERJA = u.USER_RID where PENYUMBANG=? order by s.waktu desc`
+		let p1 = [req.session.login.USER_RID]
+		data = await asyncFB.doQuery(s1, p1)
+	} else {
+		view = { ...baseView, title:'Riwayat Data Sampah', page: 'sampah' };
+		let s1 = `select s.SAMPAH_RID, s.WAKTU, s.BERAT_SAMPAH, k.NAMA_KOMPLEK, a.jalan, a.kecamatan, a.kelurahan, a.kota, a.provinsi, a.kode_pos, u.USER_NAME
+		from TB_SAMPAH s INNER JOIN TB_KOMPLEK k on s.KOMPLEK_PENYUMBANG = k.KOMPLEK_RID INNER JOIN TB_ALAMAT a on s.ALAMAT_PENYUMBANG = a.ALAMAT_RID
+		INNER JOIN TB_USER u on s.PENYUMBANG = u.USER_RID where pekerja=? order by s.waktu desc`
+		let p1 = [req.session.login.USER_RID]
+		data = await asyncFB.doQuery(s1, p1)
+		
+	}
 	const adjustedResults = data.map(row => {
 		const dateCreated = new Date(row.WAKTU);
 		dateCreated.setHours(dateCreated.getHours() + 7);
@@ -37,7 +48,7 @@ router.get('/', async function (req, res) {
 		row.WAKTU = `${day} ${month}`;
 		return row;
 	});
-	
+
 	res.render('html', { view, adjustedResults });
 });
 
@@ -151,15 +162,37 @@ const getMonthRange = () => {
     };
 };
 
-router.get('/data-user-per-minggu', async function (req, res) {
-	const { startOfWeek, endOfWeek } = getWeekRange();
+const getTodayRangeInGMT7 = () => {
+    const today = new Date();
+    const gmt7Offset = 7 * 60 * 60 * 1000;
+
+    const gmt7Date = new Date(today.getTime() + gmt7Offset);
+
+    const startOfDay = new Date(gmt7Date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(gmt7Date);
+    endOfDay.setUTCHours(23, 59, 59, 999);
+
+    const startOfDayLocal = new Date(startOfDay.getTime());
+    const endOfDayLocal = new Date(endOfDay.getTime());
+
+    return {
+        startOfDay: startOfDayLocal.toISOString().split('.')[0].replace('T', ' '),
+        endOfDay: endOfDayLocal.toISOString().split('.')[0].replace('T', ' ')
+    };
+};
+
+
+router.get('/data-user-per-hari', async function (req, res) {
+	const { startOfDay, endOfDay } = getTodayRangeInGMT7();
 	try {
 		let s1 = `
 			SELECT COUNT(DISTINCT PENYUMBANG) AS SUDAH
 			FROM TB_SAMPAH
 			WHERE WAKTU >= ? AND WAKTU <= ?
 		`;
-		let p1 = [startOfWeek, endOfWeek]
+		let p1 = [startOfDay, endOfDay]
 		let r1 = await asyncFB.doQuery(s1, p1)
 		let s2 = `
 			SELECT COUNT(USER_RID) AS TOTAL
@@ -190,6 +223,103 @@ router.get('/data-petugas-per-bulan', async function (req, res) {
 		let r1 = await asyncFB.doQuery(s1, p1)
 
 		res.status(200).json(r1[0]);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/data-pelanggan-per-bulan', async function (req, res) {
+	const { startOfMonth, endOfMonth } = getMonthRange();
+	try {
+		let s1 = `
+			SELECT SUM(BERAT_SAMPAH) as BERAT
+			FROM TB_SAMPAH
+			WHERE WAKTU >= ? AND WAKTU <= ? AND PENYUMBANG = ?
+		`;
+		let p1 = [startOfMonth, endOfMonth, req.session.login.USER_RID]
+		let r1 = await asyncFB.doQuery(s1, p1)
+
+		res.status(200).json(r1[0]);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/data-pelanggan-per-minggu', async function (req, res) {
+	const { startOfWeek, endOfWeek } = getWeekRange();
+	try {
+		let s1 = `
+			SELECT SUM(BERAT_SAMPAH) as BERAT
+			FROM TB_SAMPAH
+			WHERE WAKTU >= ? AND WAKTU <= ? AND PENYUMBANG = ?
+		`;
+		let p1 = [startOfWeek, endOfWeek, req.session.login.USER_RID]
+		let r1 = await asyncFB.doQuery(s1, p1)
+
+		res.status(200).json(r1[0]);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/data-user-hari-ini', async function (req, res) {
+	const { startOfDay, endOfDay } = getTodayRangeInGMT7();
+	try {
+		let s1 = `
+			SELECT s.BERAT_SAMPAH, u.USER_NAME
+			FROM TB_SAMPAH s JOIN TB_USER u ON s.PEKERJA = u.USER_RID
+			WHERE WAKTU >= ? AND WAKTU <= ? AND PENYUMBANG = ?
+		`;
+		let p1 = [startOfDay, endOfDay, req.session.login.USER_RID]
+		let r1 = await asyncFB.doQuery(s1, p1)
+		if (r1.length == 0) {
+			res.status(200).json(r1);
+		} else {
+			res.status(200).json(r1[0]);
+		}
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/total-sampah-user', async function (req, res) {
+	try {
+		let s1 = `
+			SELECT SUM(BERAT_SAMPAH) as TOTAL
+			FROM TB_SAMPAH
+			WHERE PENYUMBANG = ?
+		`;
+		let p1 = [req.session.login.USER_RID]
+		let r1 = await asyncFB.doQuery(s1, p1)
+		res.status(200).json(r1[0]);
+	} catch {
+		res.status(500).json({message: "Internal Server Error"})
+	}
+});
+
+router.get('/kontribusi-user-per-minggu', async function (req, res) {
+	const { startOfWeek, endOfWeek } = getWeekRange();
+	try {
+		let s1 = `
+			SELECT SUM(BERAT_SAMPAH) as BERAT
+			FROM TB_SAMPAH
+			WHERE WAKTU >= ? AND WAKTU <= ? AND PENYUMBANG = ?
+		`;
+		let p1 = [startOfWeek, endOfWeek, req.session.login.USER_RID];
+		let r1 = await asyncFB.doQuery(s1, p1);
+		let s2 = `
+			SELECT SUM(BERAT_SAMPAH) as TOTAL_BERAT
+			FROM TB_SAMPAH
+			WHERE KOMPLEK_PENYUMBANG = ?
+		`;
+		let p2 = [req.session.login.KOMPLEK];
+		let r2 = await asyncFB.doQuery(s2, p2);
+
+		const data = {
+			SAMPAH_USER: r1[0].BERAT,
+			TOTAL_SAMPAH: r2[0].TOTAL_BERAT
+		}
+		res.status(200).json(data);
 	} catch {
 		res.status(500).json({message: "Internal Server Error"})
 	}

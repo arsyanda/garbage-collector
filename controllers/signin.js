@@ -24,6 +24,8 @@ router.get('/signout', async function (req, res) {
 	});
 })
 
+const bcrypt = require('bcrypt');
+
 router.post('/check', async function (req, res) {
 	let s1 = `
 		select *
@@ -34,6 +36,32 @@ router.post('/check', async function (req, res) {
 	let p1 = [req.fields.user, req.fields.pass]
 	let r1 = await asyncFB.doQuery(s1, p1)
 
+	// Encrypted password
+
+	// let s1 = `
+	// 	select *
+	// 	from tb_user
+	// 	inner join tb_role on role_rid=user_role
+	// 	where user_username=?
+	// `;
+	// let p1 = [req.fields.user];
+	// let r1 = await asyncFB.doQuery(s1, p1);
+
+	// if (r1.length === 0) {
+	// 	req.flash('error', 'Username or password is incorrect');
+	// 	return res.redirect('/login');
+	// }
+
+	// const user = r1[0];
+	// const isPasswordValid = await bcrypt.compare(req.fields.pass, user.USER_PASSWORD);
+
+	// if (!isPasswordValid) {
+	// 	req.flash('error', 'Username or password is incorrect');
+	// 	return res.redirect('/login');
+	// }
+	
+	// end
+	
 	if(r1.length>0) {
 		req.session.login = r1[0]
 		req.session.login.USER_USERNAME = '',
@@ -51,19 +79,18 @@ router.post('/check', async function (req, res) {
             if (req.session.login.ROLE_NAME == 'Admin') {
                 redirectTo = '/home-admin';
             } else if (req.session.login.ROLE_NAME == 'Pelanggan') {
-                redirectTo = '/home-pelanggan';
+                redirectTo = '/home';
             }
             if (req.session.redirectTo) {
                 redirectTo = req.session.redirectTo;
                 delete req.session.redirectTo;
             }
 
-			console.log(redirectTo)
             res.redirect(redirectTo);
         });
 	} else {
 		req.flash('info', 'User / password akun Anda salah!')
-		res.redirect('/blank')
+		res.redirect('/signin')
 	}
 	
 })

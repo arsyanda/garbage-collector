@@ -1,0 +1,122 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <div class="row mb-2">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <h3 class="text-gray"><b>Data Pelanggan</b></h3>
+                                <a class="btn btn-primary" href="/user/pelanggan/create">Tambah Pelanggan</a>
+                            </div>
+                        </div>
+                        <div class="table-wrapper table-responsive" style="display: grid;">
+                            <table id="thetable" class="table-style-1 stripe nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No.</th>
+                                        <th class="text-center">Nama Pelanggan</th>
+                                        <th class="text-center">Komplek</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% data.forEach((item, index) => { %>
+                                        <tr class="<%= index % 2 === 0 ? 'bg-primary-400' : 'bg-orange-400' %>" style="border-radius: 8px;">
+                                            <td class="text-center rad-left no-bg" style="padding: 10px;"><%= index + 1 %></td>
+                                            <td class="text-center" style="padding: 10px;"><%= item.USER_NAME %></td>
+                                            <td class="text-center" style="padding: 10px;"><%= item.NAMA_KOMPLEK %></td>
+                                            <td class="text-center rad-right no-bg" style="padding: 10px;">
+                                                <div class="text-center">
+                                                    <!-- <a class="btn btn-primary text-white mr-5" href="/<%= view.url %>/update/<%= item.USER_RID %>">
+                                                        <i class="lni lni-pencil"></i>
+                                                    </a> -->
+                                                    <a class="btn btn-danger text-white mr-5" onclick="confirmDelete('/user/pelanggan/delete/<%= item.USER_RID %>')">
+                                                        <i class="lni lni-trash-can"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary text-white" onclick="showQRCode('<%= item.ALAMAT %>', '<%= item.USER_NAME %>', '<%= item.NAMA_KOMPLEK %>')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="22" style="display: flex; align-items: center;">
+                                                            <path d="M0 80C0 53.5 21.5 32 48 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48L0 80zM64 96l0 64 64 0 0-64L64 96zM0 336c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96zm64 16l0 64 64 0 0-64-64 0zM304 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm80 64l-64 0 0 64 64 0 0-64zM256 304c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s7.2-16 16-16s16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-64 0c-8.8 0-16-7.2-16-16s-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-160zM368 480a16 16 0 1 1 0-32 16 16 0 1 1 0 32zm64 0a16 16 0 1 1 0-32 16 16 0 1 1 0 32z"/>
+                                                        </svg>
+                                                    </a>                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#thetable').DataTable({
+            "stripeClasses": ['bg-primary-400', 'bg-orange-400'],
+            "paging": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "order": [],
+        });
+    });
+</script>
+<script>
+    async function confirmDelete(link){
+        Swal.fire({
+            title: "System:",
+            text: "Yakin untuk menghapus data ini?",
+            icon: "info",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Hapus",
+            denyButtonText: `Batal`
+            }).then((result) => {
+            if (result.isConfirmed) {
+                location.href=`${link}`
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "System:",
+                    text: "Menghapus data dibatalkan",
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+    async function showQRCode(alamatID, nama, komplek) {
+        try {
+            const response = await fetch(`/alamat/generate-qr/${alamatID}`);
+            if (response.ok) {
+                const qrCodeHtml = await response.text();
+                Swal.fire({
+                    title: 'QR Code',
+                    html: qrCodeHtml,
+                    showCloseButton: true,
+                    showCancelButton: false,
+                    focusConfirm: false,
+
+                    didRender: () => {
+                        const qrImage = document.querySelector('.swal2-html-container img');
+                        if (qrImage) {
+                            qrImage.addEventListener('click', () => {
+                                const link = document.createElement('a');
+                                link.href = qrImage.src;
+                                link.download = `QRCode_${nama}_${komplek}.png`;
+                                link.click();
+                            });
+                        }
+                    }
+                });
+            } else {
+                Swal.fire('Error', 'Failed to load QR code', 'error');
+            }
+        } catch (error) {
+            console.error('Error fetching QR code:', error);
+            Swal.fire('Error', 'Failed to load QR code', 'error');
+        }
+    }
+</script>

@@ -29,4 +29,17 @@ router.get('/home-admin', async function(req, res) {
     res.render('html', { view });
 })
 
+router.get('/home', async function(req, res) {
+    const view = { ...baseView, page: 'home-pelanggan' };
+    const s1 =`
+    SELECT k.NAMA_KOMPLEK
+    FROM TB_USER u JOIN TB_KOMPLEK k ON u.KOMPLEK = k.KOMPLEK_RID
+    WHERE USER_RID = ?
+    `
+    const p1 = [req.session.login.USER_RID]
+    let r1 = await asyncFB.doQuery(s1,p1)
+    let data = r1[0]
+    res.render('html', { view, data });
+})
+
 module.exports = router;   

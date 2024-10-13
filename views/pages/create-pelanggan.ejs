@@ -1,0 +1,95 @@
+<section class="section">
+    <div class="container-fluid">
+        <div class="tables-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <h2 class="text-gray">Form Input Data Pelanggan</h2>
+                        <div class="mt-4">
+                            <form method="post" action="/user/pelanggan/create" enctype="application/json" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Nama Pelanggan</label>
+                                        <input type="text" class="form-control" name="USER_NAME" placeholder="Masukan Nama Lengkap Pelanggan" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Username</label>
+                                        <input type="text" class="form-control" name="USER_USERNAME" id="USER_USERNAME" placeholder="Username untuk Log In" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Nomor Telepon</label>
+                                        <input type="number" class="form-control" name="USER_PHONE" id="USER_PHONE" placeholder="Masukkan Nomor Telepon Pelanggan" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Password</label>
+                                        <input type="password" class="form-control" name="USER_PASSWORD" id="USER_PASSWORD" placeholder="Password untuk Log In" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="USER_EMAIL" placeholder="Masukan Email Pelanggan" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 select-style-1">
+                                        <label for="komplek-penyumbang" class="form-label">Tempat Biodigester</label>
+                                        <select class="form-control" name="komplek" id="komplek-penyumbang" required>
+                                            <option value="" disabled selected>Pilih Komplek</option>
+                                            <% for(let d in data) {%>
+                                                <option value="<%= data[d].KOMPLEK_RID %>"><%= data[d].NAMA_KOMPLEK %></option>
+                                            <% } %>
+                                        </select>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="berat-sampah" class="form-label">Alamat Lengkap</label>
+                                        <input type="text" class="form-control" name="JALAN" placeholder="Masukan Alamat Lengkap Pelanggan" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="provinsi" class="form-label">Provinsi</label>
+                                        <input type="text" class="form-control" name="provinsi" id="provinsi" placeholder="Masukan Provinsi" required>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kota" class="form-label">Kota</label>
+                                        <input type="text" class="form-control" name="kota" id="kota" placeholder="Masukan Kota" required>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kelurahan" class="form-label">Kelurahan</label>
+                                        <input type="text" class="form-control" name="kelurahan" id="kelurahan" placeholder="Masukan Kelurahan" required>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kecamatan" class="form-label">Kecamatan</label>
+                                        <input type="text" class="form-control" name="kecamatan" id="kecamatan" placeholder="Masukan Kecamatan" required>   
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label for="kode_pos" class="form-label">Kode Pos</label>
+                                        <input type="number" class="form-control" name="kode_pos" id="kode_pos" placeholder="Masukan Kode Pos" required>   
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    })()
+</script>

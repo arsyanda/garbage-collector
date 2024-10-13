@@ -59,7 +59,7 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="custom-card">
-                    <a href="/sampah" class="btn image-btn">
+                    <a href="/user/list-pekerja" class="btn image-btn">
                         <img src="assets/images/logo/group-logo.png" alt="Trash Icon">
                     </a>
                     <div>
@@ -68,18 +68,32 @@
                         <!-- <p class="percentage">↑ 9.4% Meningkat sebanyak 12.1 Kg</p> -->
                     </div>
                 </div>
-                <div class="custom-card mt-4">
-                    <a href="/komplek" class="btn image-btn">
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="custom-card">
+                    <a href="/biodigester" class="btn image-btn">
                         <img src="assets/images/logo/komplek.png" alt="Trash Icon">
                     </a>
                     <div>
-                        <h3>Jumlah Komplek</h3>
+                        <h3>Jumlah Biodigester</h3>
                         <h2 id="komplek-data"></h2>
                         <!-- <p class="percentage">↑ 9.4% Meningkat sebanyak 12.1 Kg</p> -->
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-4 mb-4">
+                <div class="custom-card">
+                    <a href="/user/list-pelanggan" class="btn image-btn">
+                        <img src="assets/images/logo/group-logo.png" alt="Trash Icon">
+                    </a>
+                    <div>
+                        <h3>Jumlah User</h3>
+                        <h2 id="user-data"></h2>
+                        <!-- <p class="percentage">↑ 9.4% Meningkat sebanyak 12.1 Kg</p> -->
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
@@ -106,7 +120,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
@@ -130,7 +144,7 @@
           
           function fetchKomplekData() {
               $.ajax({
-                  url: '/komplek/jumlah-komplek',
+                  url: '/biodigester/jumlah-komplek',
                   method: 'GET',
                   success: function(response) {
                     const jumlah = response.JUMLAH
@@ -186,9 +200,24 @@
               });
           }
 
+          function fetchUserData() {
+              $.ajax({
+                  url: '/user/total-user',
+                  method: 'GET',
+                  success: function(response) {
+                    const jumlah = response.JUMLAH
+                    $('#user-data').html(`<b>${jumlah} Orang</b>`);
+                  },
+                  error: function(error) {
+                    console.error('Error fetching progress data:', error);
+                  }
+              });
+          }
+
           fetchPekerjaData();
           fetchKomplekData();
           fetchTaskData();
+          fetchUserData();
       });
     </script>
   <% } %>

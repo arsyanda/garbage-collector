@@ -66,7 +66,7 @@ app.use('/blank', require('./controllers/blank'));
 app.use('/sampah', require('./controllers/sampah'));
 app.use('/task', require('./controllers/task'));
 app.use('/alamat', require('./controllers/alamat'));
-app.use('/komplek', require('./controllers/komplek'));
+app.use('/biodigester', require('./controllers/biodigester'));
 
 let baseView = {
 	title: '',
@@ -83,7 +83,7 @@ app.use((req, res, next) => {
 	if (req.session.login.ROLE_NAME == 'Admin') {
 		redirectTo = '/home-admin';
 	} else if (req.session.login.ROLE_NAME == 'Pelanggan') {
-		redirectTo = '/home-pelanggan';
+		redirectTo = '/home';
 	}
 
 	let view = { ...baseView, title: 'Page Not Found',
@@ -103,7 +103,7 @@ app.use((err, req, res, next) => {
 	if (req.session.login.ROLE_NAME == 'Admin') {
 		redirectTo = '/home-admin';
 	} else if (req.session.login.ROLE_NAME == 'Pelanggan') {
-		redirectTo = '/home-pelanggan';
+		redirectTo = '/home';
 	}
 
 	let view = { ...baseView, title: 'Server Error',
